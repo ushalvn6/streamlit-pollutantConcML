@@ -8,3 +8,5 @@ O3_VALS = []
 PM2_point_5_VALS = []
 PM10_VALS = []
 DATA_NO = 0
+PREDICT = False
+DATA_READY = False

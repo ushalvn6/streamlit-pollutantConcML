@@ -5,6 +5,8 @@ import pandas as pd
 from main import DataReader
 from google.cloud import firestore
 
+
+
 def main():
     st.title('Air Quality Predictor')
 
@@ -16,6 +18,7 @@ def main():
         d = {'temp': global_vars.TEMPERATURE_VALS, 'humidity': global_vars.HUMIDITY_VALS}
         chart_data = pd.DataFrame(data=d)
         st.line_chart(chart_data)
+    
 
 
 if __name__ == '__main__':
