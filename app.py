@@ -15,7 +15,7 @@ def main():
         st.write(global_vars.TEMPERATURE_VALS)
     
     if st.button('Data'):
-        d = {'temp': global_vars.TEMPERATURE_VALS, 'humidity': global_vars.HUMIDITY_VALS}
+        d = {'temp': global_vars.TEMPERATURE_VALS, 'humidity': global_vars.HUMIDITY_VALS, 'pressure':global_vars.PRESSURE_VALS, 'PM2.5':global_vars.PM2_point_5_VALS, 'PM10':global_vars.PM10_VALS, 'O3':global_vars.O3_VALS, 'SO2':global_vars.SO2_VALS, 'CO':global_vars.CO_VALS, 'CO2':global_vars.CO2_VALS, 'NHx':global_vars.NHX_VALS}
         chart_data = pd.DataFrame(data=d)
         st.line_chart(chart_data)
     
