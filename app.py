@@ -3,6 +3,7 @@ import threading
 import global_vars
 import pandas as pd
 from main import DataReader
+from data_updater import DataUpdater
 from google.cloud import firestore
 
 
@@ -25,26 +26,45 @@ def main():
     col2.metric("Pressure (hPa)", global_vars.PRESSURE_VALS[-1], 0 if len(global_vars.PRESSURE_VALS)<=1 else (global_vars.PRESSURE_VALS[-1]-global_vars.PRESSURE_VALS[-2]))
     col3.metric("Humidity (%)", global_vars.HUMIDITY_VALS[-1], 0 if len(global_vars.HUMIDITY_VALS)<=1 else (global_vars.HUMIDITY_VALS[-1]-global_vars.HUMIDITY_VALS[-2]))
     
-    if st.button('CHART'):
-        d1 = {'temp': global_vars.TEMPERATURE_VALS}
+    if st.button('TREND') and (len(global_vars.TEMPERATURE_VALS_PREV)>=25):
+        d1 = {'temp': global_vars.TEMPERATURE_VALS_PREV}
         chart_data1 = pd.DataFrame(data=d1)
-        d2 = {'pressure': global_vars.PRESSURE_VALS}
+        d2 = {'pressure': global_vars.PRESSURE_VALS_PREV}
         chart_data2 = pd.DataFrame(data=d2)
-        d3 = {'humidity': global_vars.HUMIDITY_VALS}
+        d3 = {'humidity': global_vars.HUMIDITY_VALS_PREV}
         chart_data3 = pd.DataFrame(data=d3)
-        d4 = {'CO': global_vars.CO_VALS}
+        d4 = {'CO': global_vars.CO_VALS_PREV}
         chart_data4 = pd.DataFrame(data=d4)
-        d5 = {'CO2': global_vars.CO2_VALS}
+        d5 = {'CO2': global_vars.CO2_VALS_PREV}
         chart_data5 = pd.DataFrame(data=d5)
-        st.area_chart(chart_data1)
-        st.area_chart(chart_data2)
-        st.area_chart(chart_data3)
-        st.area_chart(chart_data4)
-        st.area_chart(chart_data5)
+        d6 = {'NHx': global_vars.NHX_VALS_PREV}
+        chart_data6= pd.DataFrame(data=d6)
+        d7 = {'PM2.5': global_vars.PM2_point_5_VALS_PREV}
+        chart_data7 = pd.DataFrame(data=d7)
+        d8 = {'PM10': global_vars.PM10_VALS_PREV}
+        chart_data8 = pd.DataFrame(data=d8)
+        d9 = {'O3': global_vars.O3_VALS_PREV}
+        chart_data9 = pd.DataFrame(data=d9)
+        d10 = {'SO2': global_vars.SO2_VALS_PREV}
+        chart_data10 = pd.DataFrame(data=d10)
+        st.line_chart(chart_data1)
+        st.line_chart(chart_data2)
+        st.line_chart(chart_data3)
+        st.line_chart(chart_data4)
+        st.line_chart(chart_data5)
+        st.line_chart(chart_data6)
+        st.line_chart(chart_data7)
+        st.line_chart(chart_data8)
+        st.line_chart(chart_data9)
+        st.line_chart(chart_data10)
+    else:
+        st.write("Insufficient data to be presented")
+
     
 
 
 if __name__ == '__main__':
     main()
     DataReader()
+    DataUpdater()
     
