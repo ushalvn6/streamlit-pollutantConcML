@@ -23,8 +23,6 @@ def print_vals():
     print(f'CO readings: {global_vars.CO_VALS}')
     print(f'CO2 readings: {global_vars.CO2_VALS}')
     print(f'NHx readings: {global_vars.NHX_VALS}')
-    print(f'Latitude: {global_vars.LATITUDE}')
-    print(f'Longitude: {global_vars.LONGITUDE}')
     print(f'Make prediction?: {global_vars.PREDICT}')
     print(f"Data Length: {len(global_vars.TEMPERATURE_VALS)}")
 
@@ -48,8 +46,6 @@ def get_data ():
                 global_vars.NHX_VALS.append(temp_values["NHx"])
                 global_vars.PM2_point_5_VALS.append(temp_values["PM2_5"])
                 global_vars.PM10_VALS.append(temp_values["PM10"])   
-                global_vars.LATITUDE = temp_values["Latitude"]
-                global_vars.LONGITUDE = temp_values["Longitude"]
                 global_vars.PREDICT = temp_values['predict']
                 print_vals()
                 delete_done.set()
@@ -80,8 +76,6 @@ def get_data ():
     global_vars.CO_VALS.append(initial_values["CO"])
     global_vars.CO2_VALS.append(initial_values["CO2"])
     global_vars.NHX_VALS.append(initial_values["NHx"])
-    global_vars.LATITUDE = initial_values["Latitude"]
-    global_vars.LONGITUDE = initial_values["Longitude"]
     global_vars.DATA_NO += 1
     print("The contents are: ", initial_values)
    

@@ -10,21 +10,7 @@ import streamlit.components.v1 as components
 from geopy.geocoders import Nominatim
 from PIL import Image
 
-def location_det():
 
-        # Initialize Nominatim API
-    geolocator = Nominatim(user_agent="geoapiExercises")
-    # Assign Latitude & Longitude
-    Latitude = str(global_vars.LATITUDE)
-    Longitude = str(global_vars.LONGITUDE)
-
-    
-    # Get location with geocode
-    location = geolocator.geocode(Latitude+","+Longitude)
-    
-    # Display location
-    st.header(f'Latitude: {Latitude}, Longitude: {Longitude}')
-    st.write(f'Predicted Location: {location}')
 def add_bg_from_url():
     st.markdown(
          f"""
@@ -60,8 +46,6 @@ def add_bg_from_url():
 def main():
     st.title('Air Quality Pollutant Concentration Data')
     add_bg_from_url() 
-    if st.button('Location') :
-        location_det()
     col4, col5, col6 = st.columns(3)
     col4.metric("CO (ppm)", '%.2f' % global_vars.CO_VALS[-1], 0 if len(global_vars.CO_VALS)<=1 else (global_vars.CO_VALS[-1]-global_vars.CO_VALS[-2]), delta_color='inverse')
     col5.metric("CO2 (ppm)",  '%.2f' % global_vars.CO2_VALS[-1], 0 if len(global_vars.CO2_VALS)<=1 else (global_vars.CO2_VALS[-1]-global_vars.CO2_VALS[-2]), delta_color='inverse')
