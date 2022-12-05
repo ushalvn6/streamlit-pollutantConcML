@@ -46,6 +46,8 @@ def add_bg_from_url():
 def main():
     st.title('Air Quality Pollutant Concentration Data')
     add_bg_from_url() 
+    image = Image.open('status.jpg')
+    st.image(image, caption='Concentration Indicator Chart')
     col4, col5, col6 = st.columns(3)
     col4.metric("CO (ppm)", '%.2f' % global_vars.CO_VALS[-1], 0 if len(global_vars.CO_VALS)<=1 else (global_vars.CO_VALS[-1]-global_vars.CO_VALS[-2]), delta_color='inverse')
     col5.metric("CO2 (ppm)",  '%.2f' % global_vars.CO2_VALS[-1], 0 if len(global_vars.CO2_VALS)<=1 else (global_vars.CO2_VALS[-1]-global_vars.CO2_VALS[-2]), delta_color='inverse')
@@ -85,6 +87,7 @@ def main():
             st.line_chart(chart_data9)
         else:
             st.write("Insufficient data to be presented")
+    
 
     st_autorefresh(interval=6000)
     
