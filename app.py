@@ -1,16 +1,12 @@
 import streamlit as st
-import threading
 import global_vars
 import pandas as pd
 from main import DataReader
 from data_updater import DataUpdater
-from google.cloud import firestore
 from streamlit_autorefresh import st_autorefresh
-import streamlit.components.v1 as components
-from geopy.geocoders import Nominatim
-from PIL import Image
 
 
+# Method to add the background image, and other css formatting
 def add_bg_from_url():
     st.markdown(
          f"""
@@ -46,25 +42,36 @@ def add_bg_from_url():
 def main():
     st.title('Air Quality Pollutant Concentration Data')
     add_bg_from_url() 
-    image = Image.open('status.jpg')
-    st.image(image, caption='Concentration Indicator Chart')
-    col4, col5, col6 = st.columns(3)
-    col4.metric("CO (ppm)", '%.2f' % global_vars.CO_VALS[-1], 0 if len(global_vars.CO_VALS)<=1 else (global_vars.CO_VALS[-1]-global_vars.CO_VALS[-2]), delta_color='inverse')
-    col5.metric("CO2 (ppm)",  '%.2f' % global_vars.CO2_VALS[-1], 0 if len(global_vars.CO2_VALS)<=1 else (global_vars.CO2_VALS[-1]-global_vars.CO2_VALS[-2]), delta_color='inverse')
-    col6.metric("NHx (ppm)", '%.2f' % global_vars.NHX_VALS[-1], 0 if len(global_vars.NHX_VALS)<=1 else (global_vars.NHX_VALS[-1]-global_vars.NHX_VALS[-2]), delta_color='inverse')
-    col7, col8, col9, col10 = st.columns(4)
-    col7.metric("PM2.5 (ug/m3)", global_vars.PM2_point_5_VALS[-1], 0 if len(global_vars.PM2_point_5_VALS)<=1 else (global_vars.PM2_point_5_VALS[-1]-global_vars.PM2_point_5_VALS[-2]), delta_color='inverse')
-    col8.metric("PM10 (ug/m3)", global_vars.PM10_VALS[-1], 0 if len(global_vars.PM10_VALS)<=1 else (global_vars.PM10_VALS[-1]-global_vars.PM10_VALS[-2]), delta_color='inverse')
-    col9.metric("O3 (ppb)", global_vars.O3_VALS[-1], 0 if len(global_vars.O3_VALS)<=1 else (global_vars.O3_VALS[-1]-global_vars.O3_VALS[-2]), delta_color='inverse')
-    col10.metric("SO2 (ppm)", '%.2f' % global_vars.SO2_VALS[-1], 0 if len(global_vars.SO2_VALS)<=1 else (global_vars.SO2_VALS[-1]-global_vars.SO2_VALS[-2]), delta_color='inverse')
+    tab1, tab2, tab3 = st.tabs(['Data', 'Indicator', 'Trend'])
     
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Temperature (degree Celsius)", '%.2f' % global_vars.TEMPERATURE_VALS[-1], 0 if len(global_vars.TEMPERATURE_VALS)<=1 else (global_vars.TEMPERATURE_VALS[-1]-global_vars.TEMPERATURE_VALS[-2]), delta_color='inverse')
-    col2.metric("Pressure (hPa)", '%.2f' % global_vars.PRESSURE_VALS[-1], 0 if len(global_vars.PRESSURE_VALS)<=1 else (global_vars.PRESSURE_VALS[-1]-global_vars.PRESSURE_VALS[-2]), delta_color='inverse')
-    col3.metric("Humidity (%)", '%.2f' % global_vars.HUMIDITY_VALS[-1], 0 if len(global_vars.HUMIDITY_VALS)<=1 else (global_vars.HUMIDITY_VALS[-1]-global_vars.HUMIDITY_VALS[-2]), delta_color='inverse')
-    
-    
-    if st.button('TREND') :
+   # Indicator Tab
+    with tab2:
+        st.image ("api.jpg",caption="API Chart")
+        st.image('status.jpg',caption="Pollutant Classification Chart")
+        
+    # Data tab
+    with tab1:
+        # Displays the current value & difference with previous values to 2 d.p
+        st.metric("API", '%.2f' % float(global_vars.CURRENT_AQI), '%.2f' % float(global_vars.CURRENT_AQI-global_vars.PREVIOUS_AQI), delta_color='inverse')
+        col4, col5, col6 = st.columns(3)
+        col4.metric("CO (ppm)", '%.2f' % global_vars.CO_VALS[-1], 0 if len(global_vars.CO_VALS)<=1 else (global_vars.CO_VALS[-1]-global_vars.CO_VALS[-2]), delta_color='inverse')
+        col5.metric("CO2 (ppm)",  '%.2f' % global_vars.CO2_VALS[-1], 0 if len(global_vars.CO2_VALS)<=1 else (global_vars.CO2_VALS[-1]-global_vars.CO2_VALS[-2]), delta_color='inverse')
+        col6.metric("NHx (ppm)", '%.2f' % global_vars.NHX_VALS[-1], 0 if len(global_vars.NHX_VALS)<=1 else (global_vars.NHX_VALS[-1]-global_vars.NHX_VALS[-2]), delta_color='inverse')
+        col7, col8, col9, col10 = st.columns(4)
+        col7.metric("PM2.5 (ug/m3)", global_vars.PM2_point_5_VALS[-1], 0 if len(global_vars.PM2_point_5_VALS)<=1 else (global_vars.PM2_point_5_VALS[-1]-global_vars.PM2_point_5_VALS[-2]), delta_color='inverse')
+        col8.metric("PM10 (ug/m3)", global_vars.PM10_VALS[-1], 0 if len(global_vars.PM10_VALS)<=1 else (global_vars.PM10_VALS[-1]-global_vars.PM10_VALS[-2]), delta_color='inverse')
+        col9.metric("O3 (ppb)", global_vars.O3_VALS[-1], 0 if len(global_vars.O3_VALS)<=1 else (global_vars.O3_VALS[-1]-global_vars.O3_VALS[-2]), delta_color='inverse')
+        col10.metric("SO2 (ppm)", '%.2f' % global_vars.SO2_VALS[-1], 0 if len(global_vars.SO2_VALS)<=1 else (global_vars.SO2_VALS[-1]-global_vars.SO2_VALS[-2]), delta_color='inverse')
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Temperature (degree Celsius)", '%.2f' % global_vars.TEMPERATURE_VALS[-1], 0 if len(global_vars.TEMPERATURE_VALS)<=1 else (global_vars.TEMPERATURE_VALS[-1]-global_vars.TEMPERATURE_VALS[-2]), delta_color='inverse')
+        col2.metric("Pressure (hPa)", '%.2f' % global_vars.PRESSURE_VALS[-1], 0 if len(global_vars.PRESSURE_VALS)<=1 else (global_vars.PRESSURE_VALS[-1]-global_vars.PRESSURE_VALS[-2]), delta_color='inverse')
+        col3.metric("Humidity (%)", '%.2f' % global_vars.HUMIDITY_VALS[-1], 0 if len(global_vars.HUMIDITY_VALS)<=1 else (global_vars.HUMIDITY_VALS[-1]-global_vars.HUMIDITY_VALS[-2]), delta_color='inverse')
+
+    # Trend tab
+    with tab3:
+        
+        # Plots the chart for each data set. Some of the data are grouped together as they show similar values.
         if len(global_vars.TEMPERATURE_VALS)>=20:
             st.header('Data trend of the previous 20 readings')
             d1 = {'temperature': global_vars.TEMPERATURE_VALS, 'humidity': global_vars.HUMIDITY_VALS}
@@ -89,12 +96,12 @@ def main():
             st.write("Insufficient data to be presented")
     
 
-    st_autorefresh(interval=6000)
+    st_autorefresh(interval=6000)   # refresh every 6 seconds
     
 
 
 if __name__ == '__main__':
     main()
-    DataReader()
-    DataUpdater()
+    DataReader()    # Class that reads data from firestore
+    DataUpdater()   # Class that updates data to firestore
     
